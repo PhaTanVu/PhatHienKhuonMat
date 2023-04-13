@@ -1,27 +1,16 @@
 import streamlit as st
-import cv2
+import numpy as np
+import cv2 as cv
 
-cap = cv2.VideoCapture(0)
+st.subheader('Phát hiện khuôn mặt')
+FRAME_WINDOW = st.image([])
+deviceId = 0
+cap = cv.VideoCapture(deviceId)
 
-if not cap.isOpened():
-    st.error("Cannot open camera")
-
-stop_button = st.button("Stop")
-while not stop_button:
-    ret, frame = cap.read()
-    if not ret:
-        st.error("Failed to grab frame")
+while True:
+    hasFrame, frame = cap.read()
+    if not hasFrame:
+        print('No frames grabbed!')
         break
 
-    cv2.imshow('Camera', frame)
-
-    # Wait for a key press to exit
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-    
-    # Update the stop button state
-    stop_button = st.session_state.stop_button
-
-# Clean up
-cap.release()
-cv2.destroyAllWindows()
+    FRAME_WINDOW.image(frame, channels='BGR')
